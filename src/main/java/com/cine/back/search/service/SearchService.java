@@ -30,18 +30,19 @@ public class SearchService {
             String userId = request.userId();
             List<String> keywords = request.keywords();
 
-            if (keywords == null) {
-                keywords = new ArrayList<>();
-                log.warn("검색어가 없습니다. 빈 리스트로 초기화합니다.");
-            }
-
             if (userId == null || userId.isEmpty()) {
                 userId = "guest"; // 사용자 ID가 없는 경우 "게스트"로 지정
                 log.info("사용자 ID가 없으므로 'guest'를 사용합니다.");
             }
 
-           // 검색어를 SearchEntity로 변환하여 저장
-           saveSearchEntities(userId, keywords);
+            // 검색어가 null이거나 비어 있으면 저장하지 않음
+            if (keywords == null || keywords.isEmpty()) {
+                log.warn("검색어가 없습니다. 검색어를 저장하지 않습니다.");
+                return;
+            }
+
+            // 검색어를 SearchEntity로 변환하여 저장
+            saveSearchEntities(userId, keywords);
 
             log.info("검색어 저장 서비스 - 성공");
 
@@ -51,7 +52,7 @@ public class SearchService {
         }
     }
 
-    //사용자 ID와 검색 리스트 받아서 SearchEntity로 변환하고 저장
+    // 사용자 ID와 검색 리스트 받아서 SearchEntity로 변환하고 저장
     @Transactional
     private void saveSearchEntities(String userId, List<String> keywords) {
         List<SearchEntity> searchEntities = new ArrayList<>();
@@ -74,7 +75,7 @@ public class SearchService {
     public List<SearchEntity> getSearchListByUserId(String userId) {
 
         if (userId == null) {
-            //로그인 안한 사람은 세션으로 구분할지, 로그인을 하라고 할지 고민 후 추후 반영 예정 
+            // 로그인 안한 사람은 세션으로 구분할지, 로그인을 하라고 할지 고민 후 추후 반영 예정
             log.info("검색어 조회 서비스 - userId 제외한 나머지 키워드 조회");
             return searchRepository.findAll();
         } else {
@@ -82,5 +83,10 @@ public class SearchService {
             return searchRepository.findByUserIdOrderBySearchListTimeDesc(userId);
         }
     }
-    
+
+    @Transactional
+    public List<SearchEntity> findSearchEntityByKeyword(String keyword) {
+        return searchRepository.findBySearchKeyword(keyword);
+    }
+
 }
