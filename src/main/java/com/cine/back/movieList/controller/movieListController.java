@@ -3,7 +3,6 @@ package com.cine.back.movieList.controller;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cine.back.movieList.entity.MovieDetailEntity;
-import com.cine.back.movieList.repository.MovieDetailRepository;
 import com.cine.back.movieList.service.MovieListService;
 
 import lombok.RequiredArgsConstructor;
@@ -22,8 +21,8 @@ import java.util.*;
 @RestController
 @RequestMapping("/movie")
 @RequiredArgsConstructor
-public class MovieListController implements MovieListControllerDocs{
-    
+public class MovieListController implements MovieListControllerDocs {
+
     private final MovieListService movieListService;
 
     // 영화명, 배우, 장르로 검색
@@ -42,14 +41,14 @@ public class MovieListController implements MovieListControllerDocs{
             log.info("영화 검색 컨트롤러 - 검색 결과 반환: {}", searchResults);
             return ResponseEntity.ok(searchResults);
 
-        }catch (Exception e) {
+        } catch (Exception e) {
             log.error("영화 검색 컨트롤러 - 검색 중 오류 발생: ", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-     // 같은 장르의 영화 추천
-     @GetMapping("/recommend")
+    // 같은 장르의 영화 추천
+    @GetMapping("/recommend")
     public ResponseEntity<List<MovieDetailEntity>> recommendSimilarGenreMovies(@RequestParam String genre) {
         log.info("영화 추천 컨트롤러 컨트롤러 실행 - 장르: {}", genre);
         try {

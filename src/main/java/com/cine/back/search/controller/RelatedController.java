@@ -1,7 +1,9 @@
 package com.cine.back.search.controller;
 
-import java.util.List;
-
+import com.cine.back.search.entity.SearchEntity;
+import com.cine.back.search.service.RelatedService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -9,33 +11,26 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cine.back.search.dto.SearchRequest;
-import com.cine.back.search.entity.RelatedEntity;
-import com.cine.back.search.service.RelatedService;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 @Slf4j
 @RestController
-@RequestMapping("/related/search")
+@RequestMapping("/related")
 @RequiredArgsConstructor
-public class RelatedController implements RelatedControllerDocs {
+public class RelatedController {
 
     private final RelatedService relatedService;
 
     @PostMapping("/save")
-    public ResponseEntity<List<RelatedEntity>> saveRelatedKeyword(@RequestBody SearchRequest searchRequest) {
-        log.info("Received keywords: {}", searchRequest.keywords());
-        log.info("연관검색어 저장 컨트롤러 실행");
-
+    public ResponseEntity<String> saveRelatedEntity(@RequestBody SearchEntity searchEntity,
+            @RequestBody String secondaryKeyword) {
         try {
-            List<RelatedEntity> savedRelatedKeywords = relatedService.saveRelatedKeyword(searchRequest);
-            log.info("연관검색어 저장 컨트롤러 실행 완료");
-            return ResponseEntity.ok(savedRelatedKeywords);
-        } catch (RuntimeException e) {
-            log.error("연관검색어 저장 컨트롤러 실행 중 실패", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            relatedService.saveRelatedEntity(searchEntity, secondaryKeyword);
+            log.info("연관 검색어 저장 요청 처리 완료 - Primary 키워드: '{}', Secondary 키워드: '{}'",
+                    searchEntity.getSearchKeyword(), secondaryKeyword);
+            return ResponseEntity.ok("연관 검색어 저장 성공");
+        } catch (Exception e) {
+            log.error("연관 검색어 저장 요청 처리 중 오류 발생", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("연관 검색어 저장 실패");
         }
     }
+
 }

@@ -29,4 +29,16 @@ public interface SearchControllerDocs {
                         @ApiResponse(responseCode = "400", description = "사용자ID를 통해 검색어 조회 실패") })
         public ResponseEntity<List<SearchEntity>> getSearchListByUserId(@PathVariable(value = "userId") String userId);
 
+        @Operation(summary = "사용자ID로 검색기록 삭제", description = "사용자의 검색기록을 삭제합니다.")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "사용자ID를 통해 검색어 삭제 성공"),
+                        @ApiResponse(responseCode = "400", description = "사용자ID를 통해 검색어 삭제 실패") })
+        public ResponseEntity<String> deleteSearchKeyword(@PathVariable(value = "userId") String userId,
+                        @PathVariable(value = "searchListNo") int searchListNo);
+
+        @Operation(summary = "사용자ID로 검색기록 전체삭제", description = "사용자의 검색기록을 전체삭제합니다.")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "사용자ID를 통해 검색어 전체삭제 성공"),
+                        @ApiResponse(responseCode = "400", description = "사용자ID를 통해 검색어 전체삭제 실패") })
+        public ResponseEntity<String> deleteAllSearchKeyword(@PathVariable(value = "userId") String userId);
 }

@@ -1,12 +1,7 @@
 package com.cine.back.search.controller;
 
-import java.util.List;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
-
-import com.cine.back.search.dto.SearchRequest;
-import com.cine.back.search.entity.RelatedEntity;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -20,5 +15,6 @@ public interface RelatedControllerDocs {
                         @ApiResponse(responseCode = "200", description = "연관검색어 저장 성공"),
                         @ApiResponse(responseCode = "400", description = "연관검색어 저장 실패")
         })
-        public ResponseEntity<List<RelatedEntity>> saveRelatedKeyword(@RequestBody SearchRequest searchRequest);
+        public ResponseEntity<String> saveRelatedEntity(@RequestBody String primaryKeyword,
+                        @RequestBody String secondaryKeyword);
 }

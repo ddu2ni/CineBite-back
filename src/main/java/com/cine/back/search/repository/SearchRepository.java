@@ -14,9 +14,12 @@ public interface SearchRepository extends JpaRepository<SearchEntity, Integer> {
     List<SearchEntity> findByUserIdOrderBySearchListTimeDesc(String userId);
 
     // 주어진 검색어로 검색 엔터티를 찾습니다.
-    List<SearchEntity> findBySearchKeyword(String searchKeyword);
+    SearchEntity findBySearchKeyword(String searchKeyword);
 
-    // 유저찾기
-    List<SearchEntity> findByUserId(String userId);
+    // 삭제 - 사용자Id와 검색어번호로 조회
+    SearchEntity findByUserIdAndSearchListNo(String userId, int searchListNo);
+
+    // 전체삭제
+    void deleteByUserId(String userId);
 
 }

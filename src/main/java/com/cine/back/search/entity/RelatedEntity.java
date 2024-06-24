@@ -20,9 +20,9 @@ public class RelatedEntity {
     @Column(name = "search_related_no")
     private int searchRelatedNo; // 연관 검색어 ID
 
-    // referencedColumnName를 통해 실제 매핑될 필드 지정
+    // referencedColumnName : 실제 매핑될 필드 지정
     @ManyToOne
-    @JoinColumn(name = "search_list_no", referencedColumnName = "search_list_no")
+    @JoinColumn(name = "search_list_no")
     private SearchEntity searchEntity;
 
     @Column(name = "search_related_word", length = 1500)
