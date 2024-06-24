@@ -3,12 +3,14 @@ package com.cine.back.board.entity;
 import java.time.LocalDateTime;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import lombok.*;
 import java.util.List;
 
 @Entity
 @Data
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @Table(name = "board_list")
 public class BoardEntity {
 
@@ -46,19 +48,23 @@ public class BoardEntity {
     private String boardImgUrl;
 
     // 작성일, 수정일
+    @CreatedDate
     @Column(name = "board_createdDate")
     private LocalDateTime boardCreatedDate;
 
+    @LastModifiedDate
     @Column(name = "board_updateDate")
     private LocalDateTime boardUpdateDate;
 
     @Builder
     public BoardEntity(String boardTitle, String boardContent, String userEmail, LocalDateTime boardCreatedDate,
+            LocalDateTime boardUpdateDate,
             String boardImgUrl) {
         this.boardTitle = boardTitle;
         this.boardContent = boardContent;
         this.userEmail = userEmail;
         this.boardCreatedDate = boardCreatedDate;
+        this.boardUpdateDate = boardUpdateDate;
         this.boardImgUrl = boardImgUrl;
     }
 

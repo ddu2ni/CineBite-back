@@ -9,8 +9,6 @@ import java.time.LocalDateTime;
 @Data
 public class BoardResponseDto {
 
-    private Long boardNo;
-
     private String boardTitle;
 
     private String boardContent;
@@ -30,11 +28,9 @@ public class BoardResponseDto {
     private LocalDateTime boardCreatedDate;
 
     @Builder
-    public BoardResponseDto(Long boardNo, String boardTitle, String boardContent, String userEmail,
-            List<String> tagNames,
+    public BoardResponseDto(String boardTitle, String boardContent, String userEmail, List<String> tagNames,
             int boardHitCount, int boardCommentCount, int boardLikeCount, String boardImgUrl,
             LocalDateTime boardCreatedDate) {
-        this.boardNo = boardNo;
         this.boardTitle = boardTitle;
         this.boardContent = boardContent;
         this.userEmail = userEmail;

@@ -3,6 +3,7 @@ package com.cine.back.board.controller;
 import java.io.IOException;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.cine.back.board.dto.BoardRequestDto;
 import com.cine.back.board.dto.BoardResponseDto;
+import com.cine.back.board.entity.BoardEntity;
 import com.cine.back.board.service.BoardService;
 
 import lombok.RequiredArgsConstructor;
@@ -29,11 +31,15 @@ public class BoardController implements BoardControllerDocs {
 
     @Override
     @PostMapping("/write")
-    public ResponseEntity<Long> saveBoard(BoardRequestDto boardDto, MultipartFile imgFile) throws IOException {
+    public ResponseEntity<Long> saveBoard(BoardRequestDto boardDto, MultipartFile imgFile) {
         log.info("게시글 저장 컨트롤러, BoardTitle: {}", boardDto.getBoardTitle());
-        BoardResponseDto responseDto = boardService.writeBoard(boardDto, imgFile);
-        return ResponseEntity.ok().body(responseDto.getBoardNo());
-
+        try {
+            BoardEntity boardEntity = boardService.writeBoard(boardDto, imgFile);
+            return ResponseEntity.ok().body(boardEntity.getBoardNo());
+        } catch (IOException e) {
+            log.error("게시글 저장 중 오류 발생: {}", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @Override
@@ -54,19 +60,27 @@ public class BoardController implements BoardControllerDocs {
 
     @Override
     @DeleteMapping("/delete/{no}")
-    public ResponseEntity<String> deleteBoard(Long boardNo) throws IOException {
+    public ResponseEntity<String> deleteBoard(Long boardNo) {
         log.info("특정 게시글 삭제 컨트롤러, Board No: {}", boardNo);
-        boardService.deleteBoard(boardNo);
-        return ResponseEntity.ok().body("게시글 삭제 성공");
+        try {
+            boardService.deleteBoard(boardNo);
+            return ResponseEntity.ok().body("게시글 삭제 성공");
+        } catch (IOException e) {
+            log.error("게시글 삭제 중 오류 발생: {}", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @Override
     @PutMapping("/modify/{no}")
-    public ResponseEntity<Long> updateBoard(Long boardNo, BoardRequestDto boardDto, MultipartFile imgFile)
-            throws IOException {
+    public ResponseEntity<Long> updateBoard(Long boardNo, BoardRequestDto boardDto, MultipartFile imgFile) {
         log.info("특정 게시글 수정 컨트롤러, Board No: {}", boardNo);
-        BoardResponseDto responseDto = boardService.modifyBoard(boardNo, boardDto, imgFile);
-        return ResponseEntity.ok().body(responseDto.getBoardNo());
+        try {
+            BoardEntity boardEntity = boardService.modifyBoard(boardNo, boardDto, imgFile);
+            return ResponseEntity.ok().body(boardEntity.getBoardNo());
+        } catch (IOException e) {
+            log.error("게시글 수정 중 오류 발생: {}", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
-
 }

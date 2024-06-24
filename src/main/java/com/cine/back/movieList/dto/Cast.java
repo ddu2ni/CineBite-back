@@ -7,8 +7,8 @@ import lombok.Getter;
 
 @Getter
 @Embeddable
-@JsonIgnoreProperties(ignoreUnknown = true) 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Cast {
-    private String name;
-    private String profile_path;
+  private String name;
+  private String profile_path;
 }

@@ -11,14 +11,14 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SearchEntity {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "search_list_no")
-    private int searchListNo; //최근 검색 리스트 ID
+    private int searchListNo; // 최근 검색 리스트 ID
 
     @Column(name = "user_id", length = 50)
-    private String userId; //사용자 아이디
+    private String userId; // 사용자 아이디
 
     @Column(name = "search_keyword")
     private String searchKeyword; // 검색어

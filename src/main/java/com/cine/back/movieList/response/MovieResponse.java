@@ -1,15 +1,12 @@
 package com.cine.back.movieList.response;
 
 import com.cine.back.movieList.dto.Movie;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.Data;
-
+import lombok.Getter;
 import java.util.List;
 
-@Data
-@JsonIgnoreProperties(ignoreUnknown = true)
+@Getter
 public class MovieResponse {
 
     @JsonProperty("page")
