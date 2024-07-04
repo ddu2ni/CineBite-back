@@ -58,4 +58,5 @@ public interface PostControllerDocs {
         ResponseEntity<Long> updateBoard(@PathVariable(value = "no") Long boardNo,
                         @RequestPart(value = "dto") PostRequestDto boardDto,
                         @RequestPart(value = "file") MultipartFile imgFile) throws IOException;
+
 }

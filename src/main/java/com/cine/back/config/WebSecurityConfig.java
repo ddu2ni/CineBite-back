@@ -1,6 +1,5 @@
 package com.cine.back.config;
 
-
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -36,85 +35,91 @@ import jakarta.servlet.http.HttpServletResponse;
 @RequiredArgsConstructor
 public class WebSecurityConfig {
 
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final DefaultOAuth2UserService oAuth2UserService;
-    private final OAuth2SuccessHandler oAuth2SuccessHandler;
-    private final com.cine.back.user.service.implement.OAuth2UserServiceImplement OAuth2UserServiceImplement;
+        private final JwtAuthenticationFilter jwtAuthenticationFilter;
+        private final DefaultOAuth2UserService oAuth2UserService;
+        private final OAuth2SuccessHandler oAuth2SuccessHandler;
+        private final com.cine.back.user.service.implement.OAuth2UserServiceImplement OAuth2UserServiceImplement;
 
-    @Bean
-    protected SecurityFilterChain configure(HttpSecurity httpSecurity) throws Exception {
-        
-        httpSecurity
-            .cors(cors -> cors
-                .configurationSource(corsConfigurationSource())
-            )
-            .csrf(CsrfConfigurer::disable) 
-            .httpBasic(HttpBasicConfigurer::disable)
-            .sessionManagement(sessionManagement -> sessionManagement
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            )
-            // .addFilterAfter(new JWTFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class) // 재로그인, 무한로프 방지 // xx 추가
+        @Bean
+        protected SecurityFilterChain configure(HttpSecurity httpSecurity) throws Exception {
 
-            .authorizeHttpRequests(request -> request
-                .requestMatchers("/","/api/v1/auth/**","/oauth2/**").permitAll()
-                .requestMatchers("/api/v1/user/**").hasRole("USER") 
-                .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-                .anyRequest().authenticated()
-            )
-            .oauth2Login(oauth2 -> oauth2
-                .authorizationEndpoint(endpoint -> endpoint.baseUri("/api/v1/auth/oauth2")) 
-                .redirectionEndpoint(endpoint -> endpoint.baseUri("/oauth2/callback/*"))
-                .userInfoEndpoint(endpoint -> endpoint.userService(oAuth2UserService)
-                .userService(OAuth2UserServiceImplement)) // OAuth2UserService 설정) // xx 추가
-                .successHandler(oAuth2SuccessHandler) 
-            )
-            .exceptionHandling(exceptionHandling -> exceptionHandling
-                .authenticationEntryPoint(new FailedAuthenticationEntryPoint())
-            )
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // JWT 인증 필터 추가
+                httpSecurity
+                                .cors(cors -> cors
+                                                .configurationSource(corsConfigurationSource()))
+                                .csrf(CsrfConfigurer::disable)
+                                .httpBasic(HttpBasicConfigurer::disable)
+                                .sessionManagement(sessionManagement -> sessionManagement
+                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                                // .addFilterAfter(new JWTFilter(jwtProvider),
+                                // UsernamePasswordAuthenticationFilter.class) // 재로그인, 무한로프 방지 // xx 추가
 
-            // xx 추가
-            .csrf((auth) -> auth.disable())
-            .formLogin((auth) -> auth.disable())
-            .httpBasic((auth) -> auth.disable());
+                                .authorizeHttpRequests(request -> request
+                                                .requestMatchers("/", "/api/v1/auth/**", "/oauth2/**").permitAll()
+                                                .requestMatchers("/api/v1/user/**").hasRole("USER")
+                                                .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                                                .anyRequest().permitAll())
+                                .oauth2Login(oauth2 -> oauth2
+                                                .authorizationEndpoint(
+                                                                endpoint -> endpoint.baseUri("/api/v1/auth/oauth2"))
+                                                .redirectionEndpoint(endpoint -> endpoint.baseUri("/oauth2/callback/*"))
+                                                .userInfoEndpoint(endpoint -> endpoint.userService(oAuth2UserService)
+                                                                .userService(OAuth2UserServiceImplement)) // OAuth2UserService
+                                                                                                          // 설정) // xx
+                                                                                                          // 추가
+                                                .successHandler(oAuth2SuccessHandler))
+                                .exceptionHandling(exceptionHandling -> exceptionHandling
+                                                .authenticationEntryPoint(new FailedAuthenticationEntryPoint()))
+                                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // JWT
+                                                                                                                      // 인증
+                                                                                                                      // 필터
+                                                                                                                      // 추가
 
-        return httpSecurity.build();
-    }
+                                // xx 추가
+                                .csrf((auth) -> auth.disable())
+                                .formLogin((auth) -> auth.disable())
+                                .httpBasic((auth) -> auth.disable());
 
-    @Bean
-    protected CorsConfigurationSource corsConfigurationSource() {
+                return httpSecurity.build();
+        }
 
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.addAllowedOrigin("http://localhost:3000");
-        corsConfiguration.addAllowedMethod("*");
-        corsConfiguration.addAllowedHeader("*");
+        @Bean
+        protected CorsConfigurationSource corsConfigurationSource() {
 
-        corsConfiguration.setAllowCredentials(true);
-        corsConfiguration.setMaxAge(3600L); // xx 추가
-        corsConfiguration.setExposedHeaders(Arrays.asList(
-            "Set-Cookie", // Set-Cookie 헤더를 노출
-            "Authorization"  // Authorization에 jwt 담아서 보냄 // Authorization 헤더를 노출
-            /* ,"Access-Control-Allow-Headers",
-                "Authorization, x-xsrf-token, Access-Control-Allow-Headers, Origin, Accept, X-Requested-With, " +
-                "Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers" */
-        )); // 노출된 헤더 설정
+                CorsConfiguration corsConfiguration = new CorsConfiguration();
+                corsConfiguration.addAllowedOrigin("http://localhost:3000");
+                corsConfiguration.addAllowedMethod("*");
+                corsConfiguration.addAllowedHeader("*");
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", corsConfiguration);
+                corsConfiguration.setAllowCredentials(true);
+                corsConfiguration.setMaxAge(3600L); // xx 추가
+                corsConfiguration.setExposedHeaders(Arrays.asList(
+                                "Set-Cookie", // Set-Cookie 헤더를 노출
+                                "Authorization" // Authorization에 jwt 담아서 보냄 // Authorization 헤더를 노출
+                /*
+                 * ,"Access-Control-Allow-Headers",
+                 * "Authorization, x-xsrf-token, Access-Control-Allow-Headers, Origin, Accept, X-Requested-With, "
+                 * +
+                 * "Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
+                 */
+                )); // 노출된 헤더 설정
 
-        return source;
-    }
-    // xx cors 에러2 같이 확인 "/api/v1/**" 변경
+                UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+                source.registerCorsConfiguration("/**", corsConfiguration);
+
+                return source;
+        }
+        // xx cors 에러2 같이 확인 "/api/v1/**" 변경
 }
 
 // 인증 실패 핸들러 클래스
 class FailedAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
-    @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+        @Override
+        public void commence(HttpServletRequest request, HttpServletResponse response,
+                        AuthenticationException authException) throws IOException, ServletException {
 
-        response.setContentType("application/json");
-        response.setStatus(HttpServletResponse.SC_FORBIDDEN); 
-        response.getWriter().write("{\"code\": \"NP\", \"message\": \"No Permission.\"}");
-    }
+                response.setContentType("application/json");
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                response.getWriter().write("{\"code\": \"NP\", \"message\": \"No Permission.\"}");
+        }
 }

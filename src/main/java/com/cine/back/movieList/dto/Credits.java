@@ -12,7 +12,6 @@ import lombok.Getter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Getter
 @Embeddable // 다른 클래스에 포함
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Credits {
 
     @JsonProperty("cast")
